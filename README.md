@@ -33,7 +33,8 @@ sentencepiece == 0.2.0
 faiss-cpu == 1.8.0.post1
 numpy >= 1.17.2
 pandas >= 1.0.0
-tqdm >=4.40.0
+tqdm
+jsonlines
 ```
 
 2.Install openmatch. More details can be found at [https://github.com/OpenMatch/OpenMatch](https://github.com/OpenMatch/OpenMatch)
@@ -71,17 +72,51 @@ wget -c http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Bea
 gzip -d meta_Beauty.json.gz
 
 # Move files to "data/" folder
+mkdir data
 mv ratings_Beauty.csv data/
 mv meta_Beauty.json data/
 
-# Process the raw data into atom files that can be recognized by Recbole
+# Process the raw data into atomic files that can be recognized by Recbole
+mkdir dataset
 bash scripts/process_origin.sh
 
 # Keep the necessary data and process it into ".csv" files
 bash scripts/process_beauty.sh
 ```
 
-### 2. 构建mfilter训练数据
+### 2. Data preprocessing for training $\text{M}_{Filter}$
+
+Before that, you need to process the four original datasets separately according to the above process and get the atomic files, and then construct the mixed pretraining data of $\text{M}_{Filter}$ according to the proportion.
+
+Here, we use recbole to construct training and test data from the dataset atom files:
+
+```bash
+bash scripts/gen_dataset.sh
+```
+
+Then, we use $\text{M}_{Rec}$ to generate item representations:
+
+```bash
+bash scripts/gen_all_items.sh
+```
+
+For $\text{M}_{Filter}$ training data construction, we sampled the four datasets with balance. For each dataset, we selected the number of items corresponding to the dataset with the largest number of training samples and then randomly supplemented the datasets with insufficient training data:
+
+```bash
+python src/sample_train.py
+```
+
+Similarly, we selected the number of training samples from the dataset with the fewest training items in each case to serve as the validation set:
+
+```bash
+python src/sample_valid.py
+```
+
+Then, we need to construct pretraining data for the training/valid data items sampled from each dataset.
+
+```bash
+bash scripts/build_pretrain.sh
+```
 
 ### 3. 预训练mfilter
 
