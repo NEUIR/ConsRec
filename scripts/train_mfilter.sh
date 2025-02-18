@@ -1,0 +1,19 @@
+python src/train.py \
+    --output_dir ckpt/pretrain \
+    --model_name_or_path google-t5/t5-base \
+    --do_train \
+    --save_steps 2000 \
+    --eval_steps 2000 \
+    --train_path data/pretrain/train.jsonl \
+    --eval_path data/pretrain/valid.jsonl \
+    --per_device_train_batch_size 32 \
+    --per_device_eval_batch_size 32 \
+    --train_n_passages 10 \
+    --num_passages 1 \
+    --learning_rate 1e-4 \
+    --q_max_len 512 \
+    --p_max_len 32 \
+    --seed 42 \
+    --num_train_epochs 30 \
+    --evaluation_strategy steps \
+    --logging_dir logs/pretrain

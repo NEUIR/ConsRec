@@ -1,17 +1,6 @@
-# ConsRec
+# ConsRec: Denoising Sequential Recommendation through User-Consistent Preference Modeling
 
 Source code for our paper: [Denoising Sequential Recommendation through User-Consistent Preference Modeling]().
-
-If you find this work useful, please cite our paper and give us a shining star 🌟
-
-```
-@inproceedings{xin2025consrec,
-  title={Denoising Sequential Recommendation through User-Consistent Preference Modeling},
-  author={},
-  journal={},
-  year={2025}
-}
-```
 
 ## Overview
 
@@ -118,17 +107,37 @@ Then, we need to construct pretraining data for the training/valid data items sa
 bash scripts/build_pretrain.sh
 ```
 
-### 3. 预训练mfilter
+Finally, we merge the training data and validation data separately:
 
-### 4. 使用mfilter生成嵌入表示
+```bash
+python src/merge_json.py
+```
+
+### 3. Pretraining for $\text{M}_{Filter}$
+
+We use two tasks, next item prediction (NIP) and mask item prediction (MIP), to pretrain the T5 model:
+
+```bash
+bash scripts/train_mfilter.sh
+```
+
+Adjust the training parameters according to the GPU device, and then select the checkpoint with the lowest eval loss as the final $\text{M}_{Filter}$.
+
+### 4. Generate embedding representation using $\text{M}_{Filter}$
+
+In order to avoid repeated calculation of the item embedding representation in subsequent steps, we save the embedding representation information in advance:
 
 ```bash
 bash scripts/gen_gembeddings.sh
 ```
 
-### 5. 计算最大连通子图
+### 5. Calculate the maximum connected subgraph to denoise the dataset
 
-### 6. 使用recbole处理数据
+### 6. Build standardized training data for $\text{M}_{Rec}$ module using Recbole
+
+```bash
+bash scripts/gen_dataset.sh
+```
 
 ### 7. mrec训练
 
@@ -140,6 +149,19 @@ bash scripts/gen_gembeddings.sh
 
 - [OpenMatch](https://github.com/OpenMatch/OpenMatch): We use OpenMatch, a open source toolkit, to reproduce the $\text{M}_{Rec}$ module.
 - [Recbole](https://github.com/RUCAIBox/RecBole): We use RecBole, a unified, comprehensive and efficient recommendation library, to process the dataset and reproduct baselines.
+
+## Citation
+
+If you find this work useful, please cite our paper and give us a shining star 🌟
+
+```
+@inproceedings{xin2025consrec,
+  title={Denoising Sequential Recommendation through User-Consistent Preference Modeling},
+  author={},
+  journal={},
+  year={2025}
+}
+```
 
 ## Contact
 
