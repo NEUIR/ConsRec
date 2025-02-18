@@ -18,7 +18,9 @@ ConsRec addresses the challenge of noisy data in sequential recommendation by co
 
 ## Requirements
 
-1.Install the following packages using Pip or Conda under this environment.
+### 1. Python Environment:
+
+Install the following packages using Pip or Conda under this environment.
 
 ```
 python >= 3.8
@@ -36,7 +38,9 @@ jsonlines
 networkx
 ```
 
-2.Install Openmatch. Refer to [https://github.com/OpenMatch/OpenMatch](https://github.com/OpenMatch/OpenMatch) for detailed instructions.
+### 2. Install Openmatch.
+
+Refer to [https://github.com/OpenMatch/OpenMatch](https://github.com/OpenMatch/OpenMatch) for detailed instructions.
 
 ```bash
 git clone https://github.com/OpenMatch/OpenMatch.git
@@ -44,7 +48,7 @@ cd OpenMatch
 pip install -e .
 ```
 
-3.Pretrained T5 weights.
+### 3. Pretrained T5 weights.
 
 Download pretrained T5 weights from Hugging Face.
 
