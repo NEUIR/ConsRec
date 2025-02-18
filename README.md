@@ -1,14 +1,22 @@
 # ConsRec: Denoising Sequential Recommendation through User-Consistent Preference Modeling
 
-Source code for our paper: [Denoising Sequential Recommendation through User-Consistent Preference Modeling]().
+This repository contains the source code for the paper: [Denoising Sequential Recommendation through User-Consistent Preference Modeling]().
 
 ## Overview
 
-ConsRec constructs a user-interacted item graph, learns item similarities from their text representations, and then extracts the maximum connected subgraph from the user-interacted item graph for denoising items. Notably, ConsRec shows the generalization ability by broadening its advantages to both item ID-based and text-based recommendation models.
+ConsRec addresses the challenge of noisy data in sequential recommendation by constructing a user-interacted item graph. It leverages item similarities derived from their text representations to extract the maximum connected subgraph, effectively denoising the items a user has interacted with. ConsRec demonstrates strong generalization capabilities by enhancing both item ID-based and text-based recommendation models.
 
 ![](figs/model.png)
 
-## Requirement
+## Key Features
+
+- **User-Consistent Preference Modeling:** Captures consistent user preferences by leveraging item similarities.
+
+- **Denoising via Graph Extraction:**  Identifies and removes noisy items through maximum connected subgraph extraction.
+
+- **Generalizability:** Improves the performance of various recommendation models.
+
+## Requirements
 
 1.Install the following packages using Pip or Conda under this environment.
 
@@ -20,7 +28,7 @@ datasets == 3.1.0
 transformers == 4.22.2
 sentencepiece == 0.2.0
 faiss-cpu == 1.8.0.post1
-scikit-learn>=1.1.2
+scikit-learn >= 1.1.2
 numpy >= 1.17.2
 pandas >= 1.0.0
 tqdm
@@ -28,68 +36,89 @@ jsonlines
 networkx
 ```
 
-2.Install openmatch. More details can be found at [https://github.com/OpenMatch/OpenMatch](https://github.com/OpenMatch/OpenMatch)
+2.Install Openmatch. Refer to [https://github.com/OpenMatch/OpenMatch](https://github.com/OpenMatch/OpenMatch) for detailed instructions.
 
 ```bash
 git clone https://github.com/OpenMatch/OpenMatch.git
 cd OpenMatch
-pip install -e.
+pip install -e .
 ```
 
-3.Prepare the pretrained T5 weights.
+3.Pretrained T5 weights.
+
+Download pretrained T5 weights from Hugging Face.
 
 ```bash
 git lfs install
 git clone https://huggingface.co/google-t5/t5-base
 ```
 
-## Reproduce ConsRec (Still Updating!)
+*Note:* Ensure that `git lfs` is properly installed. You may need to run `git lfs install` before cloning the T5 weights.
 
-### 1. Dataset preprocessing
+## Reproducion Guide
 
-We use the Amazon Pruduct 2014 dataset and the Yelp 2020 dataset for our experiments. The original data can be downloaded from the official website:
+This section provides a step-by-step guide to reproduce the ConsRec results.
+
+### 1. Dataset Preprocessing
+
+We utilize the Amazon Product 2014 and Yelp 2020 datasets. Download the original data from:
 
 - [Amazon Product 2014](https://jmcauley.ucsd.edu/data/amazon/index_2014.html)
 - [Yelp 2020](https://business.yelp.com/data/resources/open-dataset/)
 
-Here we take the Amazon Beauty dataset as an example. First, we extract the user-item interaction information in the original dataset. We only need to extract the user_id, item_id and description attributes:
+The following example uses the Amazon Beauty dataset.
+
+#### 1.1. Download and Prepare Amazon Beauty Dataset:
 
 ```bash
-# Download Amazon Beauty Dataset
 wget -c http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/ratings_Beauty.csv
 wget -c http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Beauty.json.gz
+```
 
-# Unzip the ".gz" file to get "meta_Beauty.json"
+#### 1.2. Unzip the Metadata File:
+
+```bash
 gzip -d meta_Beauty.json.gz
+```
 
-# Move files to "data/" folder
+#### 1.3. Organize Files:
+
+```bash
 mkdir data
 mv ratings_Beauty.csv data/
 mv meta_Beauty.json data/
+```
 
-# Process the raw data into atomic files that can be recognized by Recbole
+#### 1.4. Process Raw Data for Recbole:
+
+```bash
 mkdir dataset
 bash scripts/process_origin.sh
+```
 
-# Keep the necessary data and process it into ".csv" files
+#### 1.5. Extract and Process Required Data:
+
+```bash
 bash scripts/process_beauty.sh
 ```
 
-### 2. Data preprocessing for training $\text{M}_{Filter}$
+### 2. Data Preprocessing for Training $\text{M}_{Filter}$
 
-Before that, you need to process the four original datasets separately according to the above process and get the atomic files, and then construct the mixed pretraining data of $\text{M}_{Filter}$ according to the proportion.
+Before proceeding, process all four original datasets as described above to obtain the atomic files. Then, construct the mixed pretraining data for \text{M}_{Filter} according to your desired proportions.
 
-Here, we use recbole to construct training and test data from the dataset atom files:
+#### 2.1. Construct Training and Test Data using Recbole:
 
 ```bash
 bash scripts/gen_dataset.sh
 ```
 
-Then, we use $\text{M}_{Rec}$ to generate item representations:
+#### 2.2. Generate Item Representations using $\text{M}_{Rec}$:
 
 ```bash
 bash scripts/gen_pretrain_items.sh
 ```
+
+#### 2.3. Sample Training Data for $\text{M}_{Filter}$:
 
 For $\text{M}_{Filter}$ training data construction, we sampled the four datasets with balance. For each dataset, we selected the number of items corresponding to the dataset with the largest number of training samples and then randomly supplemented the datasets with insufficient training data:
 
@@ -97,19 +126,21 @@ For $\text{M}_{Filter}$ training data construction, we sampled the four datasets
 python src/sample_train.py
 ```
 
+#### 2.4. Sample Validation Data:
+
 Similarly, we selected the number of training samples from the dataset with the fewest training items in each case to serve as the validation set:
 
 ```bash
 python src/sample_valid.py
 ```
 
-Then, we need to construct pretraining data for the training/valid data items sampled from each dataset.
+#### 2.5. Construct Pretraining Data for Sampled Items:
 
 ```bash
 bash scripts/build_pretrain.sh
 ```
 
-Finally, we merge the training data and validation data separately:
+#### 2.6. Merge Training and Validation Data:
 
 ```bash
 python src/merge_json.py
@@ -117,39 +148,39 @@ python src/merge_json.py
 
 ### 3. Pretraining for $\text{M}_{Filter}$
 
-We use two tasks, next item prediction (NIP) and mask item prediction (MIP), to pretrain the T5 model:
+Pretrain the T5 model using next item prediction (NIP) and mask item prediction (MIP) tasks.
 
 ```bash
 bash scripts/train_mfilter.sh
 ```
 
-Adjust the training parameters according to the GPU device, and then select the checkpoint with the lowest eval loss as the final $\text{M}_{Filter}$.
+Adjust training parameters based on your GPU device. Select the checkpoint with the lowest evaluation loss as the final $\text{M}_{Filter}$ .
 
-### 4. Generate embedding representation using $\text{M}_{Filter}$
+### 4. Generate Embedding Representations using \text{M}_{Filter}
 
-In order to avoid repeated calculation of the item embedding representation in subsequent steps, we save the embedding representation information in advance:
+Save the item embedding representations to avoid redundant calculations.
 
 ```bash
 mkdir embedding
 bash scripts/gen_gembeddings.sh
 ```
 
-### 5. Calculate the maximum connected subgraph to denoise the dataset
+### 5. Denoise Dataset by Calculating the Maximum Connected Subgraph
 
-Next, we will embed the nodes of the representation map into an undirected graph and use BFS to calculate the maximum connected subgraph to denoise the original data:
+Embed the nodes into an undirected graph and use BFS to calculate the maximum connected subgraph.
 
 ```bash
 bash scripts/build_graph.sh
 ```
 
-We get the denoised user-item interaction data, and then copy the original item information file to the denoised data folder:
+Copy the original item information file to the denoised data folder.
 
 ```bash
 cp dataset/beauty/beauty.item dataset/beauty_filtered/
 mv dataset/beauty_filtered/beauty.item dataset/beauty_filtered/beauty_filtered.item
 ```
 
-### 6. Build standardized training data for $\text{M}_{Rec}$ module using Recbole
+### 6. Build Standardized Training Data for $\text{M}_{Rec}$ using Recbole
 
 ```bash
 bash scripts/gen_dataset.sh
@@ -157,19 +188,19 @@ bash scripts/gen_train_items.sh
 bash scripts/build_train.sh
 ```
 
-### 7. Training for $\text{M}_{Rec}$
+### 7. Training $\text{M}_{Rec}$
 
 ```bash
 bash scripts/train_mrec.sh
 ```
 
-### 8. Evaluate for $\text{M}_{Rec}$
+### 8. Evaluate $\text{M}_{Rec}$
 
 ```bash
 bash scripts/eval_mrec.sh
 ```
 
-### 9. Test for $\text{M}_{Rec}$
+### 9. Test $\text{M}_{Rec}$
 
 ```bash
 bash scripts/test_mrec.sh
@@ -181,8 +212,8 @@ bash scripts/test_mrec.sh
 
 ## Acknowledgement
 
-- [OpenMatch](https://github.com/OpenMatch/OpenMatch): We use OpenMatch, a open source toolkit, to reproduce the $\text{M}_{Rec}$ module.
-- [Recbole](https://github.com/RUCAIBox/RecBole): We use RecBole, a unified, comprehensive and efficient recommendation library, to process the dataset and reproduct baselines.
+- [OpenMatch](https://github.com/OpenMatch/OpenMatch): We utilize OpenMatch to reproduce the $\text{M}_{Rec}$ module.
+- [Recbole](https://github.com/RUCAIBox/RecBole): We leverage RecBole for dataset processing and baseline reproduction.
 
 ## Citation
 
@@ -199,7 +230,7 @@ If you find this work useful, please cite our paper and give us a shining star ð
 
 ## Contact
 
-If you have questions, suggestions, and bug reports, please email:
+For questions, suggestions, or bug reports, please contact:
 
 ```
 xinhaidong@stumail.neu.edu.cn
