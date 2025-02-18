@@ -1,6 +1,6 @@
 python src/embedding.py \
-    --input_csv /path/to/csv/file \
-    --output_prefix /path/to/save/embeddings/dataset_name \
-    --model_name /path/to/pretrained/mfilter/model \
+    --input_csv data/beauty_item.csv \
+    --output_prefix embedding/beauty \
+    --model_name ckpt/pretrain/mfilter \
     --batch_size 512 \
     --save_every 2048

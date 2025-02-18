@@ -6,7 +6,7 @@ Source code for our paper: [Denoising Sequential Recommendation through User-Con
 
 ConsRec constructs a user-interacted item graph, learns item similarities from their text representations, and then extracts the maximum connected subgraph from the user-interacted item graph for denoising items. Notably, ConsRec shows the generalization ability by broadening its advantages to both item ID-based and text-based recommendation models.
 
-![The Model Architecture of ConsRec](figs/model.png)
+![](figs/model.png)
 
 ## Requirement
 
@@ -20,10 +20,12 @@ datasets == 3.1.0
 transformers == 4.22.2
 sentencepiece == 0.2.0
 faiss-cpu == 1.8.0.post1
+scikit-learn>=1.1.2
 numpy >= 1.17.2
 pandas >= 1.0.0
 tqdm
 jsonlines
+networkx
 ```
 
 2.Install openmatch. More details can be found at [https://github.com/OpenMatch/OpenMatch](https://github.com/OpenMatch/OpenMatch)
@@ -86,7 +88,7 @@ bash scripts/gen_dataset.sh
 Then, we use $\text{M}_{Rec}$ to generate item representations:
 
 ```bash
-bash scripts/gen_all_items.sh
+bash scripts/gen_pretrain_items.sh
 ```
 
 For $\text{M}_{Filter}$ training data construction, we sampled the four datasets with balance. For each dataset, we selected the number of items corresponding to the dataset with the largest number of training samples and then randomly supplemented the datasets with insufficient training data:
@@ -128,22 +130,54 @@ Adjust the training parameters according to the GPU device, and then select the 
 In order to avoid repeated calculation of the item embedding representation in subsequent steps, we save the embedding representation information in advance:
 
 ```bash
+mkdir embedding
 bash scripts/gen_gembeddings.sh
 ```
 
 ### 5. Calculate the maximum connected subgraph to denoise the dataset
 
+Next, we will embed the nodes of the representation map into an undirected graph and use BFS to calculate the maximum connected subgraph to denoise the original data:
+
+```bash
+bash scripts/build_graph.sh
+```
+
+We get the denoised user-item interaction data, and then copy the original item information file to the denoised data folder:
+
+```bash
+cp dataset/beauty/beauty.item dataset/beauty_filtered/
+mv dataset/beauty_filtered/beauty.item dataset/beauty_filtered/beauty_filtered.item
+```
+
 ### 6. Build standardized training data for $\text{M}_{Rec}$ module using Recbole
 
 ```bash
 bash scripts/gen_dataset.sh
+bash scripts/gen_train_items.sh
+bash scripts/build_train.sh
 ```
 
-### 7. mrec训练
+### 7. Training for $\text{M}_{Rec}$
 
-### 8. mrec评估
+```bash
+bash scripts/train_mrec.sh
+```
 
-### 9. mrec测试
+### 8. Evaluate for $\text{M}_{Rec}$
+
+```bash
+bash scripts/eval_mrec.sh
+```
+
+### 9. Test for $\text{M}_{Rec}$
+
+```bash
+bash scripts/test_mrec.sh
+```
+
+## Experimental Result
+
+![](figs/result.png)
 
 ## Acknowledgement
 
@@ -154,7 +188,7 @@ bash scripts/gen_dataset.sh
 
 If you find this work useful, please cite our paper and give us a shining star 🌟
 
-```
+```bibtex
 @inproceedings{xin2025consrec,
   title={Denoising Sequential Recommendation through User-Consistent Preference Modeling},
   author={},

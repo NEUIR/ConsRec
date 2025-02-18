@@ -1,4 +1,4 @@
-python src/gen_all_items.py \
+python src/build_items.py \
     --data_name Amazon \
     --item_file data/beauty/item.txt \
     --output item.jsonl \

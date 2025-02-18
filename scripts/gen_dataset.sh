@@ -1,5 +1,5 @@
-python gen_data.py \
+python src/gen_dataset.py \
     --model SASRec \
-    --dataset amazon \
+    --dataset beauty_filtered \
     --config_files configs/amazon.yaml \
-    --save_path data/beauty
+    --save_path data/beauty_filtered

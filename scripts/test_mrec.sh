@@ -1,0 +1,11 @@
+python src/test.py \
+    --data_name beauty \
+    --data_dir data/beauty_filtered \
+    --seed 42 \
+    --item_size 32 \
+    --seq_size 256 \
+    --num_passage 2 \
+    --split_num 243 \
+    --eval_batch_size 256 \
+    --best_model_path ckpt/beauty_filtered/best_dev \
+    --logging_dir logs/beauty_filtered
