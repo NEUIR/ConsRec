@@ -8,14 +8,6 @@ ConsRec addresses the challenge of noisy data in sequential recommendation by co
 
 ![](figs/model.png)
 
-## Key Features
-
-- **User-Consistent Preference Modeling:** Captures consistent user preferences by leveraging item similarities.
-
-- **Denoising via Graph Extraction:**  Identifies and removes noisy items through maximum connected subgraph extraction.
-
-- **Generalizability:** Improves the performance of various recommendation models.
-
 ## Requirements
 
 ### 1. Python Environment:
@@ -59,7 +51,7 @@ git clone https://huggingface.co/google-t5/t5-base
 
 *Note:* Ensure that `git lfs` is properly installed. You may need to run `git lfs install` before cloning the T5 weights.
 
-## Reproducion Guide
+## Reproduction Guide
 
 This section provides a step-by-step guide to reproduce the ConsRec results.
 
