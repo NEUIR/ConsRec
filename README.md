@@ -2,6 +2,27 @@
 
 This repository contains the source code for the paper: [Denoising Sequential Recommendation through User-Consistent Preference Modeling]().
 
+[![GitHub](https://img.shields.io/badge/GitHub-ConsRec-black?logo=github)](https://github.com/OpenBMB/PIP-KAG)
+[![arXiv](https://img.shields.io/badge/arXiv-anonymous-B31B1B?logo=arxiv&logoColor=white)](https://arxiv.org/pdf/xxxx.xxxxx)
+[![HuggingFace-Paper](https://img.shields.io/badge/HuggingFace-anonymous-yellow?logo=huggingface)](https://huggingface.co/papers/xxxx.xxxxx)
+[![HuggingFace-ConsRec](https://img.shields.io/badge/HuggingFace-ConsRec-yellowgreen)](https://huggingface.co/xhd0728/ConsRec)
+
+<div align="center">
+<p align="center" dir="auto">
+
+• 🎯 [Overview](#-overview) 
+• ⚙️ [Requirements](#-requirements)
+• 🔧 [Reproduction Guide](#-reproduction-guide)
+</p>
+<p align="center" dir="auto">
+
+• ✈️ [Experimental Result](#-experimental-result) 
+• 📃 [Acknowledgement](#-acknowledgement) 
+• 📝 [Citation](#-citation)
+• 📨 [Contact](#-contact)
+</p>
+</div>
+
 ## Overview
 
 ConsRec addresses the challenge of noisy data in sequential recommendation by constructing a user-interacted item graph. It leverages item similarities derived from their text representations to extract the maximum connected subgraph, effectively denoising the items a user has interacted with. ConsRec demonstrates strong generalization capabilities by enhancing both item ID-based and text-based recommendation models.
@@ -100,7 +121,7 @@ bash scripts/process_beauty.sh
 
 ### 2. Data Preprocessing for Training $\text{M}_{Filter}$
 
-Before proceeding, process all four original datasets as described above to obtain the atomic files. Then, construct the mixed pretraining data for \text{M}_{Filter} according to your desired proportions.
+Before proceeding, process all four original datasets as described above to obtain the atomic files. Then, construct the mixed pretraining data for $\text{M}_{Filter}$ according to your desired proportions.
 
 #### 2.1. Construct Training and Test Data using Recbole:
 
