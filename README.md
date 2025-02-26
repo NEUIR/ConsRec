@@ -10,16 +10,16 @@ This repository contains the source code for the paper: [Denoising Sequential Re
 <div align="center">
 <p align="center" dir="auto">
 
-• 🎯 [Overview](#-overview) 
-• ⚙️ [Requirements](#-requirements)
-• 🔧 [Reproduction Guide](#-reproduction-guide)
+• 🎯 [Overview](#overview) 
+• ⚙️ [Requirements](#requirements)
+• 🔧 [Reproduction Guide](#reproduction-guide)
 </p>
 <p align="center" dir="auto">
 
-• ✈️ [Experimental Result](#-experimental-result) 
-• 📃 [Acknowledgement](#-acknowledgement) 
-• 📝 [Citation](#-citation)
-• 📨 [Contact](#-contact)
+• ✈️ [Experimental Result](#experimental-result) 
+• 📃 [Acknowledgement](#acknowledgement) 
+• 📝 [Citation](#citation)
+• 📨 [Contact](#contact)
 </p>
 </div>
 
