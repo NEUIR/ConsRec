@@ -13,7 +13,7 @@ python src/train.py \
     --learning_rate 1e-4 \
     --q_max_len 256 \
     --p_max_len 32 \
-    --seed 2022 \
+    --seed 42 \
     --num_train_epochs 30 \
     --evaluation_strategy steps \
     --logging_dir logs/beauty_filtered

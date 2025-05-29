@@ -85,7 +85,7 @@ def load_random_negative_items(args, item_num, data_num, train_data_ids):
     return negative_samples
 
 
-def mask_random_item(sequences, seed=2022):
+def mask_random_item(sequences, seed=42):
     random.seed(seed)
 
     def process_sequence(sequence):

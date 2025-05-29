@@ -36,7 +36,7 @@ class Options:
             help="exp name path. name or address."
             "This parameter is used only for the convenience of differentiating experiments",
         )
-        self.parser.add_argument("--seed", type=int, default=2022, help="random seed ")
+        self.parser.add_argument("--seed", type=int, default=42, help="random seed ")
         self.parser.add_argument(
             "--item_size",
             type=int,
